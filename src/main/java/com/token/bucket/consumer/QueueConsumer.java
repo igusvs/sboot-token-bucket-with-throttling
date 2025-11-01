@@ -1,28 +1,31 @@
 package com.token.bucket.consumer;
 
 import com.token.bucket.domain.QueueMessage;
-import com.token.bucket.service.TokenBucket;
+import com.token.bucket.service.ThrottlingService;
+import com.token.bucket.service.TokenBucketService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
 public class QueueConsumer {
 
-    private final TokenBucket bucket;
+    Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    public QueueConsumer(TokenBucket bucket) {
-        this.bucket = bucket;
+    private final ThrottlingService service;
+
+    public QueueConsumer(ThrottlingService service) {
+        this.service = service;
     }
+
 
     @SqsListener(value = "queue-teste")
     public void consumer(QueueMessage payload){
 
+        logger.info("m=consumer, msg=message recebida documento={}", payload.getDocumento());
 
-        System.out.println(    bucket.incrementCounter(payload.getDocumento()));
-
-
-
+        service.verify(payload);
 
 
     }

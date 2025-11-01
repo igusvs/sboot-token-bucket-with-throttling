@@ -3,6 +3,7 @@ package com.token.bucket.service;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.model.SendMessageBatchRequest;
 import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.token.bucket.domain.QueueMessage;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +27,6 @@ public class QueuePublish {
 
             List<SendMessageBatchRequestEntry> entries = new ArrayList<>();
 
-/*            SendMessageRequest request = new SendMessageRequest();
-            request.setQueueUrl("http://localhost:4566/000000000000/queue-teste");
-            request.setMessageBody(JsonConverter.toJson(message));*/
 
             messages.forEach(item -> {
                 final var entry = new SendMessageBatchRequestEntry();
@@ -47,5 +45,15 @@ public class QueuePublish {
         }catch (Exception e){
             throw e;
         }
+    }
+
+    public void publishThrottling(QueueMessage queueMessage){
+
+            SendMessageRequest request = new SendMessageRequest();
+            request.setQueueUrl("http://localhost:4566/000000000000/queue-throttling");
+            request.setMessageBody(JsonConverter.toJson(queueMessage));
+            request.setDelaySeconds(60);
+
+            queue.sendMessage(request);
     }
 }

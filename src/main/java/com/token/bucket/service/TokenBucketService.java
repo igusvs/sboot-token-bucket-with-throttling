@@ -2,21 +2,17 @@ package com.token.bucket.service;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Transaction;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-@Component
-public class TokenBucket {
+@Service
+public class TokenBucketService {
 
     private final RedisTemplate<String, String> redisTemplate;
-    private final int bucketCapacity =  1; // Maximum tokens the bucket can hold
-    private final double refillRate = 1; // Tokens refilled per second
 
-    public TokenBucket(RedisTemplate<String, String> redisTemplate) {
+    public TokenBucketService(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
