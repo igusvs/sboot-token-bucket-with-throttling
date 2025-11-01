@@ -9,6 +9,8 @@ public class QueueConsumer {
 
     @SqsListener(value = "queue-teste")
     public void consumer(@Payload String payload){
+
         System.out.println(payload);
+
     }
 }
