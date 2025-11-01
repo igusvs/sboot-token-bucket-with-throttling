@@ -8,44 +8,8 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes --requiredpass teste123
-    networks:
-      - localstack-network
-
-  localstack:
-    image: localstack/localstack:latest
-    container_name: localstack
-    ports:
-      - "4566:4566" # Porta principal do LocalStack
-      - "4510-4559:4510-4559" # Portas para serviços individuais
-    environment:
-      - SERVICES=sqs # Serviços AWS que você quer habilitar
-      - DEBUG=1
-      - DATA_DIR=/tmp/localstack/data
-      - DOCKER_HOST=unix:///var/run/docker.sock
-      - PERSISTENCE=1
-      - LS_LOG=info
-      - EDGE_PORT=4566
-      - AWS_DEFAULT_REGION=us-east-1
-      - AWS_ACCESS_KEY_ID=test
-      - AWS_SECRET_ACCESS_KEY=test
-    volumes:
-      - localstack_data:/tmp/localstack
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - localstack-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4566/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 volumes:
   redis_data:
     driver: local
-  localstack_data:
-    driver: local
 
-networks:
-  localstack-network:
-    driver: bridge

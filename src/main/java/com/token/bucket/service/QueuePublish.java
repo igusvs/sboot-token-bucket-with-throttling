@@ -37,8 +37,6 @@ public class QueuePublish {
                 entries.add(entry);
             });
 
-
-
             SendMessageBatchRequest batchRequest = new SendMessageBatchRequest();
             batchRequest.setQueueUrl("http://localhost:4566/000000000000/queue-teste");
             batchRequest.setEntries(entries);

@@ -1,5 +1,8 @@
 package com.token.bucket.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.boot.jackson.JsonComponent;
+
 public class QueueMessage {
 
     private String documento;
