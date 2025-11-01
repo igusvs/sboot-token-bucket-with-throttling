@@ -1,6 +1,7 @@
 package com.token.bucket.consumer;
 
 import com.token.bucket.domain.QueueMessage;
+import com.token.bucket.service.ThrottlingService;
 import com.token.bucket.service.TokenBucketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,16 +13,18 @@ public class QueueThrottlingConsumer {
 
     Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    private final TokenBucketService bucket;
+    private final ThrottlingService service;
 
-    public QueueThrottlingConsumer(TokenBucketService bucket) {
-        this.bucket = bucket;
+    public QueueThrottlingConsumer(ThrottlingService service) {
+        this.service = service;
     }
 
     @SqsListener(value = "queue-throttling")
     public void consumerThrottling(QueueMessage payload){
 
         logger.info("m=consumerThrottling, msg=message recebida documento={}", payload.getDocumento());
+
+        service.verify(payload);
 
 
     }

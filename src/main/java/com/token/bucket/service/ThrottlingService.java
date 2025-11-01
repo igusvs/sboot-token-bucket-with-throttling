@@ -31,7 +31,10 @@ public class ThrottlingService {
         if(result >= limitReq){
             logger.info("m=ThrottlingService.verify, msg=Envio para throttling RATE LIMIT={}", message.getDocumento() + "=" + message.getContador());
             queuePublish.publishThrottling(message);
+            return;
         }
+
+        logger.info("m=ThrottlingService.verify, msg=Consumido com sucesso = Contador={}", result);
 
     }
 }
