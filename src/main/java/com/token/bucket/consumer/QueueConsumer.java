@@ -20,7 +20,7 @@ public class QueueConsumer {
     }
 
 
-    @SqsListener(value = "queue-teste")
+    @SqsListener(value = "queue-hot")
     public void consumer(QueueMessage payload){
 
         logger.info("m=consumer, msg=message recebida documento={}", payload.getDocumento());

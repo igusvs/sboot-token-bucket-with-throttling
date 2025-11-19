@@ -8,8 +8,15 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+    volumes:
+      - ./localstack/setup.sh:/etc/localstack/init/ready.d/script.sh
 
 volumes:
+
   redis_data:
     driver: local
 
