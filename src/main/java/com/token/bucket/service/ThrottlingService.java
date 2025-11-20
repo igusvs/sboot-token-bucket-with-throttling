@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ThrottlingService {
@@ -26,7 +27,8 @@ public class ThrottlingService {
 
 
     public void verify(final PagamentoMessage message){
-        logger.info("m=ThrottlingService.verify, msg=message recebida documento={}", message.getDocumento());
+        logger.info("m=ThrottlingService.verify, msg=message recebida documento={}",
+                Map.of("operacao", message.getOperacao(), "id", message.getId()));
 
         final var result = tokenBucketService.incrementCounter(message.getDocumento());
 

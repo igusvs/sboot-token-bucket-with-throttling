@@ -3,12 +3,14 @@ package com.token.bucket.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PagamentoMessage {
 
     private String formaPagamento;
     private String operacao;
     private String documento;
+    private String id;
 
     public PagamentoMessage() {
 
@@ -21,10 +23,19 @@ public class PagamentoMessage {
             item.setFormaPagamento(this.formaPagamento);
             item.setOperacao(this.operacao);
             item.setDocumento(this.documento);
+            item.setId(UUID.randomUUID().toString());
             listaPagamentos.add(item);
         }
 
         return listaPagamentos;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFormaPagamento() {
