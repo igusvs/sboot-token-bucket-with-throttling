@@ -6,10 +6,19 @@ meta {
 
 post {
   url: http://localhost:8080/pagar
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "formaPagamento": "Pix",
+    "operacao": "Pagar",
+    "documento": "001.01"
+  }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
