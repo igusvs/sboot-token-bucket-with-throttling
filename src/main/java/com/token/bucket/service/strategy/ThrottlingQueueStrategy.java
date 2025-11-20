@@ -19,10 +19,14 @@ public class ThrottlingQueueStrategy implements SqsPublishStrategy {
 
 
     private final String queueUrl;
+    private final String delayMessage;
     private final AmazonSQSAsync queue;
 
-    public ThrottlingQueueStrategy(@Value("${queue.sqs.throttling.url}") String queueUrl, AmazonSQSAsync queue) {
+    public ThrottlingQueueStrategy(@Value("${queue.sqs.throttling.url}") String queueUrl,
+                                   @Value("${queue.sqs.throttling.delay}") String delayMessage,
+                                   AmazonSQSAsync queue) {
         this.queueUrl = queueUrl;
+        this.delayMessage = delayMessage;
         this.queue = queue;
     }
 
@@ -46,7 +50,9 @@ public class ThrottlingQueueStrategy implements SqsPublishStrategy {
             SendMessageBatchRequestEntry entry = new SendMessageBatchRequestEntry();
             entry.setMessageBody(JsonConverter.toJson(item));
             entry.setId(UUID.randomUUID().toString());
+            entry.setDelaySeconds(Integer.parseInt(this.delayMessage));
             entries.add(entry);
+
         });
 
         return entries;
