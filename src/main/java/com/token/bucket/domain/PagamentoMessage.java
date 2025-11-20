@@ -19,8 +19,8 @@ public class PagamentoMessage {
         for(int i = 0; i < 10; i++){
             final var item = new PagamentoMessage();
             item.setFormaPagamento(this.formaPagamento);
-            item.setOperacao("Pagar");
-            item.setDocumento("000.01");
+            item.setOperacao(this.operacao);
+            item.setDocumento(this.documento);
             listaPagamentos.add(item);
         }
 

@@ -1,10 +1,13 @@
 package com.token.bucket.service;
 
 import com.token.bucket.domain.PagamentoMessage;
+import com.token.bucket.domain.PublishType;
 import com.token.bucket.service.strategy.SqsPublishStrategyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ThrottlingService {
@@ -14,12 +17,10 @@ public class ThrottlingService {
     final static private Integer limitReq = 5;
 
     private final TokenBucketService tokenBucketService;
-    private final QueuePublish queuePublish;
     private final SqsPublishStrategyFactory strategyFactory;
 
-    public ThrottlingService(TokenBucketService tokenBucketService, QueuePublish queuePublish, SqsPublishStrategyFactory strategyFactory) {
+    public ThrottlingService(TokenBucketService tokenBucketService, SqsPublishStrategyFactory strategyFactory) {
         this.tokenBucketService = tokenBucketService;
-        this.queuePublish = queuePublish;
         this.strategyFactory = strategyFactory;
     }
 
@@ -32,8 +33,10 @@ public class ThrottlingService {
         logger.info("m=ThrottlingService.verify, msg=Contador={}", result);
 
         if(result >= limitReq){
-            logger.info("m=ThrottlingService.verify, msg=Envio para throttling RATE LIMIT={}", message.getDocumento() + "=" + message.getContador());
-            queuePublish.publishThrottling(message);
+            logger.info("m=ThrottlingService.verify, msg=Envio para throttling RATE LIMIT={}", message.getDocumento());
+
+            final var strategy = strategyFactory.getStrategy(PublishType.QUEUE_THROTTLING);
+            strategy.publish(List.of(message));
             return;
         }
 

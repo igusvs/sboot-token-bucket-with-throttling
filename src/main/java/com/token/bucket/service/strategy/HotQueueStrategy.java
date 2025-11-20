@@ -7,20 +7,21 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.token.bucket.domain.PagamentoMessage;
 import com.token.bucket.service.JsonConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Service
+@Component
 public class HotQueueStrategy implements SqsPublishStrategy {
 
-    @Value("${queue.sqs.hot.url}")
+
     private final String queueUrl;
     private final AmazonSQSAsync queue;
 
-    public HotQueueStrategy(String queueUrl, AmazonSQSAsync queue) {
+    public HotQueueStrategy(@Value("${queue.sqs.hot.url}") String queueUrl, AmazonSQSAsync queue) {
         this.queueUrl = queueUrl;
         this.queue = queue;
     }
@@ -57,15 +58,5 @@ public class HotQueueStrategy implements SqsPublishStrategy {
         batchRequest.setQueueUrl(this.queueUrl);
 
         return batchRequest;
-    }
-
-    public void publishThrottling(PagamentoMessage pagamentoMessage){
-
-        SendMessageRequest request = new SendMessageRequest();
-        request.setQueueUrl(this.queueUrl);
-        request.setMessageBody(JsonConverter.toJson(pagamentoMessage));
-        request.setDelaySeconds(60);
-
-        queue.sendMessage(request);
     }
 }

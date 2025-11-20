@@ -17,11 +17,11 @@ import java.util.UUID;
 @Component
 public class ThrottlingQueueStrategy implements SqsPublishStrategy {
 
-    @Value("${queue.sqs.throttling.url}")
+
     private final String queueUrl;
     private final AmazonSQSAsync queue;
 
-    public ThrottlingQueueStrategy(String queueUrl, AmazonSQSAsync queue) {
+    public ThrottlingQueueStrategy(@Value("${queue.sqs.throttling.url}") String queueUrl, AmazonSQSAsync queue) {
         this.queueUrl = queueUrl;
         this.queue = queue;
     }
