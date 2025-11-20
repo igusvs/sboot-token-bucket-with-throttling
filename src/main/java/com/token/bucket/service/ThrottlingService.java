@@ -1,6 +1,7 @@
 package com.token.bucket.service;
 
-import com.token.bucket.domain.QueueMessage;
+import com.token.bucket.domain.PagamentoMessage;
+import com.token.bucket.service.strategy.SqsPublishStrategyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,14 +15,16 @@ public class ThrottlingService {
 
     private final TokenBucketService tokenBucketService;
     private final QueuePublish queuePublish;
+    private final SqsPublishStrategyFactory strategyFactory;
 
-    public ThrottlingService(TokenBucketService tokenBucketService, QueuePublish queuePublish) {
+    public ThrottlingService(TokenBucketService tokenBucketService, QueuePublish queuePublish, SqsPublishStrategyFactory strategyFactory) {
         this.tokenBucketService = tokenBucketService;
         this.queuePublish = queuePublish;
+        this.strategyFactory = strategyFactory;
     }
 
 
-    public void verify(final QueueMessage message){
+    public void verify(final PagamentoMessage message){
         logger.info("m=ThrottlingService.verify, msg=message recebida documento={}", message.getDocumento());
 
         final var result = tokenBucketService.incrementCounter(message.getDocumento());

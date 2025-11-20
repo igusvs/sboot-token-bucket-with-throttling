@@ -1,35 +1,35 @@
-package com.token.bucket.service;
+package com.token.bucket.service.strategy;
 
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.model.SendMessageBatchRequest;
 import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.token.bucket.domain.PagamentoMessage;
+import com.token.bucket.service.JsonConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Component
-public class QueuePublish {
+public class ThrottlingQueueStrategy implements SqsPublishStrategy {
 
-    private final AmazonSQSAsync queue;
-
-    //@Value("${queue.sqs.throttling.url}")
     @Value("${queue.sqs.throttling.url}")
     private final String queueUrl;
+    private final AmazonSQSAsync queue;
 
-    public QueuePublish(AmazonSQSAsync queue, String queueUrl) {
-        this.queue = queue;
+    public ThrottlingQueueStrategy(String queueUrl, AmazonSQSAsync queue) {
         this.queueUrl = queueUrl;
+        this.queue = queue;
     }
 
-    public void publishQueue(List<PagamentoMessage> messages){
-
+    @Override
+    public void publish(List<PagamentoMessage> payload) {
         try {
-            final var entries = buildBatchMessage(messages);
+            final var entries = buildBatchMessage(payload);
 
             queue.sendMessageBatch(buildBatchRequest(entries));
 
@@ -60,13 +60,4 @@ public class QueuePublish {
         return batchRequest;
     }
 
-    public void publishThrottling(PagamentoMessage pagamentoMessage){
-
-            SendMessageRequest request = new SendMessageRequest();
-            request.setQueueUrl("http://localhost:4566/000000000000/queue-throttling");
-            request.setMessageBody(JsonConverter.toJson(pagamentoMessage));
-            request.setDelaySeconds(60);
-
-            queue.sendMessage(request);
-    }
 }

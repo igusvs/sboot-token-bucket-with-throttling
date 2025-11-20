@@ -1,8 +1,7 @@
 package com.token.bucket.consumer;
 
-import com.token.bucket.domain.QueueMessage;
+import com.token.bucket.domain.PagamentoMessage;
 import com.token.bucket.service.ThrottlingService;
-import com.token.bucket.service.TokenBucketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
@@ -21,7 +20,7 @@ public class QueueConsumer {
 
 
     @SqsListener(value = "queue-hot")
-    public void consumer(QueueMessage payload){
+    public void consumer(PagamentoMessage payload){
 
         logger.info("m=consumer, msg=message recebida documento={}", payload.getDocumento());
 
